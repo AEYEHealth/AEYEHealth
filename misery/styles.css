@@ -1,0 +1,197 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    --background-color-dark: rgb(15, 30, 52);
+    --text-color-dark: white;
+    --slider-color-dark: #ccc;
+    --slider-thumb-color-dark: white;
+    --slider-on-color-dark: green;
+    --button-background-color-dark: rgb(48, 62, 90);
+    --button-text-color-dark: white;
+    --graph-color-dark: rgb(24, 38, 66);
+    --mainapp-color-dark: rgb(24, 38, 66);
+    
+    --background-color-light: #c3c3c3;
+    --text-color-light: black;
+    --slider-color-light: rgb(241, 168, 113);
+    --slider-thumb-color-light: rgb(183, 59, 81);
+    --slider-on-color-light: #ff0000;
+    --button-background-color-light: #a9afb8;
+    --button-text-color-light: rgb(43, 29, 198);
+    --graph-color-light: rgb(132, 149, 225);
+    --mainapp-color-light: rgb(132, 149, 225);
+  }
+  
+  .light-mode {
+    --background-color: var(--background-color-light);
+    --text-color: var(--text-color-light);
+    --slider-color: var(--slider-color-light);
+    --slider-thumb-color: var(--slider-thumb-color-light);
+    --slider-on-color: var(--slider-on-color-light);
+    --button-background-color: var(--button-background-color-light);
+    --button-text-color: var(--button-text-color-light);
+    --graph-color: var(--graph-color-light);
+    --mainapp-color: var(--mainapp-color-light);
+  }
+  
+  .dark-mode {
+    --background-color: var(--background-color-dark);
+    --text-color: var(--text-color-dark);
+    --slider-color: var(--slider-color-dark);
+    --slider-thumb-color: var(--slider-thumb-color-dark);
+    --slider-on-color: var(--slider-on-color-dark);
+    --button-background-color: var(--button-background-color-dark);
+    --button-text-color: var(--button-text-color-dark);
+    --graph-color: var(--graph-color-dark);
+    --mainapp-color: var(--mainapp-color-dark);
+  }
+  
+  .side-window,
+  .main-app {
+    padding: 20px;
+    background-color: var(--mainapp-color);
+    color: var(--text-color);
+  }
+  
+  .logo {
+    width: 50px;
+  }
+  
+  .eye-icon {
+    width: 30px;
+  }
+  
+  .settings-icon {
+    width: 50px;
+  }
+  
+  .camera-switch {
+    background-color: green;
+    color: white;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .health-status {
+    color: green;
+    margin-bottom: 10px;
+  }
+  
+  button {
+    border: none;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }
+  
+  .main-app {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--mainapp-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .graph {
+    margin-top: 20px;
+    height: 300px;
+    background-color: var(--background-color);
+    border-radius: 5px;
+  }
+  
+  .collapsed-view {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    background-color: var(--background-color);
+    border-radius: 5px;
+  }
+  
+  .eye-icon {
+    width: 50px;
+    height: auto;
+  }
+  
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--slider-color);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--slider-thumb-color);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+  
+  input:checked + .slider {
+    background-color: var(--slider-on-color);
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px var(--slider-on-color);
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  

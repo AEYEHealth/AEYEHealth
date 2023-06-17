@@ -1,15 +1,22 @@
 {
-  "name": "eyehealth",
+  "name": "aeyehealth",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.js",
+  "main": "gui/main.js",
+  "productName": "AEye Health",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron ."
+  },
+  "build": {
+    "productName": "AEye Health"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "electron": "^25.1.1"
+  },
+  "dependencies": {
+    "python-shell": "^5.0.0"
   }
 }
