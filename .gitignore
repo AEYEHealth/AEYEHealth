@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+shape_predictor_68_face_landmarks.dat
+
 
 
 # local env files
