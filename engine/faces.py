@@ -3,6 +3,9 @@ import cv2
 import dlib
 import time
 import imutils
+import json
+import asyncio
+import websockets
 
 from scipy.spatial import distance as dist
 from imutils import face_utils
@@ -20,7 +23,7 @@ cam = cv2.VideoCapture(0)
 
 blink_thresh = 0.2
 frame_counter = 0
-frame_limit = 4
+frame_limit = 3
 blink_counter = 0
 
 (L_start, L_end) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
@@ -29,7 +32,16 @@ blink_counter = 0
 detector = dlib.get_frontal_face_detector()
 landmark_predict = dlib.shape_predictor('engine/shape_predictor_68_face_landmarks.dat')
 
+time_limit = 10
+time_counter = 0
+start = time.perf_counter()
+
+# async def send_data():
+#     async with websockets.connect('ws://localhost:8080') as websocket:
+#         await websocket.send(blink_counter)
+
 while True:
+
     _, frame = cam.read()
     frame = imutils.resize(frame, width=640)
 
@@ -61,13 +73,30 @@ while True:
             else:
                 frame_counter = 0
                 
+    cv2.putText(frame, f'Blinks: {blink_counter}', (30, 100), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 200, 0), 1)
+
 
         # sys.stdout.flush
         # print
 
-    # cv2.imshow("Video", frame)
+    cv2.imshow("Video", frame)
     if cv2.waitKey(5) & 0xFF == ord('q'):
         break
 
+    # change: 600000 -> 10000
+    if time.perf_counter() - start >= 0.5:
+        start = time.perf_counter();
+        data = {
+            "blinkcounter": blink_counter,
+        }
+        json_data = json.dumps(data)
+        with open("gui/storage.json", "w") as file:
+            file.write(json_data)
+        # asyncio.get_event_loop().run_until_complete(send_data())
+    
+    if time.perf_counter() - start >= 600:
+        blink_counter = 0
+
 cam.release()
 cv2.destroyAllWindows()
+
