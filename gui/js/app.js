@@ -36,7 +36,7 @@ function init() {
         y: {
           beginAtZero: true,
           // end at 60
-          max: 60,
+          max: "25",
           grid: {
             display: false,
             drawBorder: false,

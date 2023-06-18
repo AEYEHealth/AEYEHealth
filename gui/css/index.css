@@ -282,7 +282,7 @@ main {
 #smoolchart {
   width: 100% !important;
   height: auto !important;
-  transform-origin: right center;
+  transform-origin: center;
   transform: scale(1.15);
 }
 
