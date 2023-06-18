@@ -218,4 +218,29 @@ $(document).ready(() => {
     updateCharts(chartRefs);
   }, updateDuration * 10);
 });
-// setup graphs
+// notification placeholder
+$(window).click(() => {
+  // Time to take a 20 second blink break! Your eye health is lower than recommended.
+  // send a system-level notification using the icon from ../img/icon.png
+  // and the title "Time to take a 20 second blink break!"
+  // and the body "Your eye health is lower than recommended."
+
+  // if the user clicks on the notification, open the window
+
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "granted") {
+        showNotification();
+      }
+    });
+  } else {
+    showNotification();
+  }
+});
+
+function showNotification() {
+  new Notification("Time to take a 20 second blink break!", {
+    body: "Your eye health is lower than recommended.",
+    icon: "./img/icon.png",
+  });
+}
