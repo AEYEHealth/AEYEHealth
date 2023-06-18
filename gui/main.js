@@ -1,7 +1,8 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, Notification } = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
-// const { menubar } = require("menubar");
+// const notifier = require('node-notifier')
+
 
 app.setName("AEye Health");
 
@@ -64,29 +65,9 @@ function createWindow() {
 		console.log("Python script process exited with code", code);
 	});
 
-	// exec('python engine/faces.py', (error, stdout, stderr) => {
-	// 	if (error) {
-	// 	  console.error('Error running Python script:', error);
-	// 	}
-	// 	if (stdout) {
-	// 	  console.log('Python script output:', stdout);
-	// 	  mainWindow.webContents.send('python-output', stdout);
-	// 	}
-	// 	if (stderr) {
-	// 	  console.error('Python script error:', stderr);
-	// 	  mainWindow.webContents.send('python-error', stderr);
-	// 	}
-	// });
-
-	// var python = require('child_process').spawn('python', ['./faces.py']);
-	// python.stdout.on('data',function(data){
-	//     console.log("data: ",data.toString('utf8'));
-	// });
-
-	// if (process.env.NODE_ENV == "development") {
-	// 	win.webContents.openDevTools();
-	// }
 }
+
+
 
 app.whenReady().then(() => {
 	createWindow();
@@ -104,3 +85,25 @@ app.on("window-all-closed", () => {
 		app.quit();
 	}
 });
+
+
+         
+// document.getElementById('notify').onclick = (event) => {
+//     notifier.notify ({
+//     title: 'My awesome title',
+//     message: 'Hello from electron, Mr. User!',         
+//     sound: true,
+//     wait: true
+            
+//     }, function (err, response) {
+//                // Response is response from notification
+//     });
+
+//         notifier.on('click', function (notifierObject, options) {
+//         console.log("You clicked on the notification")
+//     });
+
+//         notifier.on('timeout', function (notifierObject, options) {
+//         console.log("Notification timed out!")
+//     });
+// }

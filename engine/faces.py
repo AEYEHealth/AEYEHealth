@@ -10,15 +10,26 @@ from scipy.spatial import distance as dist
 from imutils import face_utils
 
 # definitions
+history_interval = 10
 blink_thresh = 0.2
 frame_counter = 0
 frame_limit = 3
 blink_counter = 0
+previous_blink_counter = 0
+max_blinks = 250
 
 with open("gui/storage.json", "r") as read_file:
     data = json.load(read_file)
 
 blink_counter = data["blinkcounter"] if data["blinkcounter"] != None else 0
+
+with open("gui/storage.json", "w") as file:
+    data = json.load(read_file)
+    data["maxblinks"] = max_blinks
+
+    json_data = json.dumps(data)
+    with open("gui/storage.json", "w") as file:
+        file.write(json_data)
 
 def calculate_ear(eye):
 
@@ -40,6 +51,7 @@ landmark_predict = dlib.shape_predictor('engine/shape_predictor_68_face_landmark
 time_limit = 10
 time_counter = 0
 start = time.perf_counter()
+start_update = time.perf_counter()
 
 # async def send_data():
 #     async with websockets.connect('ws://localhost:8080') as websocket:
@@ -91,16 +103,31 @@ while True:
     # change: 600000 -> 10000
     if time.perf_counter() - start >= 0.5:
         start = time.perf_counter();
-        data = {
-            "blinkcounter": blink_counter,
-        }
+        data["blinkcounter"] = blink_counter
         json_data = json.dumps(data)
         with open("gui/storage.json", "w") as file:
             file.write(json_data)
-        # asyncio.get_event_loop().run_until_complete(send_data())
-    
-    if time.perf_counter() - start >= 600:
-        blink_counter = 0
+        
+    if time.perf_counter() - start_update >= history_interval:
+
+        start_update = time.perf_counter();
+
+        with open("gui/storage.json", "r") as read_file:
+            data = json.load(read_file)
+
+        blink_data = []    
+        if "blinkhistory" in data:
+            blink_data = data["blinkhistory"]
+
+        blink_data.append(blink_counter - previous_blink_counter)
+
+        data["blinkhistory"] = blink_data
+
+        json_data = json.dumps(data)
+        with open("gui/storage.json", "w") as file:
+            file.write(json_data)
+
+        previous_blink_counter = blink_counter
 
 cam.release()
 cv2.destroyAllWindows()
