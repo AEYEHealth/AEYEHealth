@@ -62,6 +62,9 @@ function createWindow() {
 	pythonProcess.on("close", (code) => {
 		console.log("Python script process exited with code", code);
 	});
+
+	win.webContents.openDevTools();
+
 }
 
 app.whenReady().then(() => {

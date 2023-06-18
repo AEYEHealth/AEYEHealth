@@ -119,6 +119,7 @@ while True:
             blink_data = data["blinkhistory"]
 
         blink_data.append(blink_counter - previous_blink_counter)
+        blink_data = blink_data[1:]
 
         data["blinkhistory"] = blink_data
 

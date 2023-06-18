@@ -219,7 +219,7 @@ $(document).ready(() => {
   }, updateDuration * 10);
 });
 // notification placeholder
-$(window).click(() => {
+$(document.body).click(() => {
   // Time to take a 20 second blink break! Your eye health is lower than recommended.
   // send a system-level notification using the icon from ../img/icon.png
   // and the title "Time to take a 20 second blink break!"
