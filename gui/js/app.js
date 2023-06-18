@@ -12,8 +12,7 @@ function updateCount() {
     let data = JSON.parse(request.responseText);
     console.log(data.blinkcounter);
     $("#progress-label").text(data.blinkcounter);
-
-    $("#progress-fill").css("top", `${(1 - data.blinkcounter / maxBlinks) * 100}%`);
+    $("#progress-fill").css("top", `${(1 - Math.min(data.blinkcounter / maxBlinks, 1.1)) * 100}%`);
   } catch (err) {
     new ErrorToast("Failed to load data from storage.json", err?.code || err || "Unknown error");
     return;
