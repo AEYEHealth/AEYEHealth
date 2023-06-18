@@ -1,354 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>AEYE Health</title>
-		<link rel="stylesheet" href="css/index.css" />
-		<link rel="stylesheet" href="svonk-util/util.css" />
-		<link rel="icon" href="path_to_your_icon.ico" />
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-		<script src="https://d3js.org/d3.v7.min.js"></script>
-	</head>
-	<body class="flex full-height column">
-		<main class="column page-bg">
-			<header class="row">
-				<div id="header_text" class="text_box flex-center">
-					AEYE Health
-				</div>
-				<nav class="glass rounded_full" id="header_nav">
-					<a class="header_nav_link" href="#header_nav">Home</a>
-					<a class="header_nav_link" href="#second_fold">Eyes</a>
-					<a class="header_nav_link" href="#content_about">About</a>
-					<a class="header_nav_link" href="#content_contact"
-						>Contact</a
-					>
-				</nav>
-			</header>
-			<div id="main_top" class="row">
-				<div id="main_top_left" class="column">
-					<div id="main_top_left_top" class="row">
-						<div class="text_box flex-center" id="box_1">
-							Your Daily Summary
-						</div>
-						<div class="box rounded_full square" id="box_2">
-							<canvas
-								id="piChart"
-								width="100%"
-								height="100%"
-							></canvas>
-							<div
-								id="piePercentage"
-								style="
-									position: absolute;
-									top: 50%;
-									left: 50%;
-									transform: translate(-50%, -50%);
-									font-size: 20px;
-									color: #ffffff;
-								"
-							></div>
-						</div>
-					</div>
-					<div id="main_top_left_bottom" class="row">
-						<div class="box rounded glass" id="box_3">
-							<label>Recent Health</label>
-							<canvas
-								id="smoolchart"
-								width="100%"
-								height="50%"
-							></canvas>
-						</div>
-						<div class="box rounded glass" id="box_4">
-							<label>Health Suggestions</label>
-							<div
-								id="suggestions_blank"
-								class="box glass rounded"
-							>
-								None Yet. Continue with your day to get
-								personalized suggestions
-							</div>
-							<script>
-								function updateCount() {
-									// load the data from ./storage.json and print it to the console
-									console.log("Loading data...");
-									//send request
-									var request = new XMLHttpRequest();
-									request.open(
-										"GET",
-										"./storage.json",
-										false
-									);
-									request.send(null);
-									var data = JSON.parse(request.responseText);
-									console.log(data.blinkcounter);
-									document.getElementById(
-										"progress-label"
-									).textContent = data.blinkcounter;
-								}
-								window.setInterval(updateCount, 500);
-							</script>
-						</div>
-					</div>
-				</div>
-				<div class="box glass rounded_full" id="box_5">
-					<div id="progress-label">40%</div>
-					<img
-						src="./img/wave.png"
-						alt="Fill Bar"
-						id="progress-fill"
-					/>
-				</div>
-			</div>
-			<!-- <div class="box rounded glass" id="box_6"></div> -->
-			<img src="img/mount.png" alt="Mountains" id="fold_img" />
-		</main>
-		<div id="second_fold">
-			<div id="second_fold_text">Health history</div>
-			<canvas id="myChart" width="100%" height="40%"></canvas>
-			<div id="content_about" class="box glass rounded info-box">
-				<h2>About</h2>
-				<hr />
-				<br />
-				<p>
-					Our eye-health app is designed to help you maintain a
-					healthy blinking frequency and reduce digital eye strain. It
-					utilizes computer vision technology to detect your blinking
-					frequency while using the computer and provides timely
-					notifications to remind you to take blink breaks when
-					needed.
-					<br />
-					<br />
-					Digital eye strain is a common issue caused by prolonged
-					screen time, leading to dry eyes, fatigue, and discomfort.
-					By promoting a healthy blink frequency, our app aims to
-					alleviate these symptoms and improve your overall eye
-					health.
-					<br />
-					<br />
-					Our team, consisting of Nick, Sander, Aarush, and Akshay,
-					has developed this app with a focus on user experience and
-					well-being. We are passionate about leveraging technology to
-					enhance eye health and make a positive impact on your daily
-					life. We hope you enjoy using our app!
-				</p>
-			</div>
-			<div
-				id="content_contact"
-				class="box glass rounded info-box"
-				style="margin-bottom: 0"
-			>
-				<h2>Contact</h2>
-				<hr />
-				<br />
-				<p>
-					For any inquiries or feedback regarding our eye-health app,
-					please feel free to reach out to us.
-					<br />
-					Nick: <a href="https://github.com/AgarwalAarush">Github</a>
-					<br />
-					Sander:
-					<a href="https://github.com/akshayshivkumar">Github</a>
-					<br />
-					Aarush: <a href="https://github.com/nickflix3003">Github</a>
-					<br />
-					Akshay: <a href="https://hithub.com/sandervonk">Github</a>
-					<br />
-				</p>
-			</div>
-		</div>
-		<script>
-			window.onload = function () {
-				var ctx = document.getElementById("myChart").getContext("2d");
-				var chart = new Chart(ctx, {
-					type: "line",
-					data: {
-						labels: ["12pm", "1pm", "2pm", "3pm", "4pm", "5pm"],
-						datasets: [
-							{
-								label: "Average Blink Frequency",
-								backgroundColor: "#142127",
-								borderColor: "#4d5175",
-								data: [3, 5, 8, 5, 6, 9],
-								elements: {
-									point: {
-										radius: 5,
-										borderWidth: 2,
-									},
-								},
-							},
-							{
-								label: "Baseline Blink Frequency",
-								backgroundColor: "#142127",
-								borderColor: "rgb(50,53,69)",
-								data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
-								elements: {
-									point: {
-										radius: 0,
-									},
-								},
-							},
-						],
-					},
-					options: {
-						plugins: {
-							legend: {
-								display: false,
-							},
-						},
-						tooltips: {
-							enabled: false,
-						},
-						responsive: true,
-						scales: {
-							y: {
-								beginAtZero: false,
-								gridLines: {
-									color: "#142127",
-								},
-								grid: {
-									display: false,
-									drawBorder: false,
-								},
-							},
-							x: {
-								grid: {
-									display: false,
-									drawBorder: false,
-								},
-							},
-						},
-					},
-				});
-				var ctx2 = document
-					.getElementById("smoolchart")
-					.getContext("2d");
-				var chart2 = new Chart(ctx2, {
-					type: "line",
-					data: {
-						labels: ["12pm", "1pm", "2pm", "3pm", "4pm", "5pm"],
-						datasets: [
-							{
-								fill: "origin",
-								lineTension: 0.5,
-								label: "Average Blink Frequency",
-								backgroundColor: "#46347fcc",
-								borderWidth: 0,
-								data: [
-									3, 4, 5, 4, 5, 4, 4, 5, 4, 5, 4, 5, 6, 5, 6,
-									5, 6, 5, 6,
-								],
-								elements: {
-									point: {
-										radius: 0,
-									},
-								},
-							},
-						],
-					},
-					options: {
-						plugins: {
-							legend: {
-								display: false,
-							},
-						},
-						tooltips: {
-							enabled: false,
-						},
-						responsive: true,
-						scales: {
-							y: {
-								beginAtZero: false,
-								grid: {
-									display: false,
-									drawBorder: false,
-								},
-								// hide labels and border
-								ticks: {
-									display: false,
-								},
-							},
-							x: {
-								grid: {
-									display: false,
-									drawBorder: false,
-								},
-								// hide labels and border
-								ticks: {
-									display: false,
-								},
-							},
-						},
-					},
-				});
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AEYE Health</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="svonk-util/util.css" />
+    <link rel="icon" href="path_to_your_icon.ico" />
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body class="flex full-height column">
+    <main class="column page-bg">
+      <header class="row">
+        <div id="header_text" class="text_box flex-center">AEYE Health</div>
+        <nav class="glass rounded_full" id="header_nav">
+          <a class="header_nav_link" href="#header_nav">Home</a>
+          <a class="header_nav_link" href="#second_fold">Eyes</a>
+          <a class="header_nav_link" href="#content_about">About</a>
+          <a class="header_nav_link" href="#content_contact">Contact</a>
+        </nav>
+      </header>
+      <div id="main_top" class="row">
+        <div id="main_top_left" class="column">
+          <div id="main_top_left_top" class="row">
+            <div class="text_box flex-center" id="box_1">Your Daily Summary</div>
+            <div class="box rounded_full square" id="box_2">
+              <canvas id="piChart" width="100%" height="100%"></canvas>
+              <div
+                id="piePercentage"
+                style="
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  font-size: 20px;
+                  color: #ffffff;
+                "
+              ></div>
+            </div>
+          </div>
+          <div id="main_top_left_bottom" class="row">
+            <div class="box rounded glass" id="box_3">
+              <label>Recent Health</label>
+              <canvas id="smoolchart" width="100%" height="50%"></canvas>
+            </div>
+            <div class="box rounded glass" id="box_4">
+              <label>Health Suggestions</label>
+              <div id="suggestions_blank" class="box glass rounded">
+                None Yet. Continue with your day to get personalized suggestions
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="box glass rounded_full" id="box_5">
+          <div id="progress-label">40%</div>
+          <img src="./img/wave.png" alt="Fill Bar" id="progress-fill" style="top: 100%" />
+        </div>
+      </div>
+      <!-- <div class="box rounded glass" id="box_6"></div> -->
+      <img src="img/mount.png" alt="Mountains" id="fold_img" />
+    </main>
+    <div id="second_fold">
+      <div id="second_fold_text">Health history</div>
+      <canvas id="myChart" width="100%" height="40%"></canvas>
+      <div id="content_about" class="box glass rounded info-box">
+        <h2>About</h2>
+        <hr />
+        <br />
+        <p>
+          Our eye-health app is designed to help you maintain a healthy blinking frequency and
+          reduce digital eye strain. It utilizes computer vision technology to detect your blinking
+          frequency while using the computer and provides timely notifications to remind you to take
+          blink breaks when needed.
+          <br />
+          <br />
+          Digital eye strain is a common issue caused by prolonged screen time, leading to dry eyes,
+          fatigue, and discomfort. By promoting a healthy blink frequency, our app aims to alleviate
+          these symptoms and improve your overall eye health.
+          <br />
+          <br />
+          Our team, consisting of Nick, Sander, Aarush, and Akshay, has developed this app with a
+          focus on user experience and well-being. We are passionate about leveraging technology to
+          enhance eye health and make a positive impact on your daily life. We hope you enjoy using
+          our app!
+        </p>
+      </div>
+      <div id="content_contact" class="box glass rounded info-box" style="margin-bottom: 0">
+        <h2>Contact</h2>
+        <hr />
+        <br />
+        <p>
+          For any inquiries or feedback regarding our eye-health app, please feel free to reach out
+          to us.
+          <br />
+          Nick: <a href="https://github.com/AgarwalAarush">Github</a>
+          <br />
+          Sander:
+          <a href="https://github.com/akshayshivkumar">Github</a>
+          <br />
+          Aarush: <a href="https://github.com/nickflix3003">Github</a>
+          <br />
+          Akshay: <a href="https://hithub.com/sandervonk">Github</a>
+          <br />
+        </p>
+      </div>
+    </div>
+    <script>
+      window.onload = function () {
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var chart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: ["12pm", "1pm", "2pm", "3pm", "4pm", "5pm"],
+            datasets: [
+              {
+                label: "Average Blink Frequency",
+                backgroundColor: "#142127",
+                borderColor: "#4d5175",
+                data: [3, 5, 8, 5, 6, 9],
+                elements: {
+                  point: {
+                    radius: 5,
+                    borderWidth: 2,
+                  },
+                },
+              },
+              {
+                label: "Baseline Blink Frequency",
+                backgroundColor: "#142127",
+                borderColor: "rgb(50,53,69)",
+                data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+                elements: {
+                  point: {
+                    radius: 0,
+                  },
+                },
+              },
+            ],
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            tooltips: {
+              enabled: false,
+            },
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: false,
+                gridLines: {
+                  color: "#142127",
+                },
+                grid: {
+                  display: false,
+                  drawBorder: false,
+                },
+              },
+              x: {
+                grid: {
+                  display: false,
+                  drawBorder: false,
+                },
+              },
+            },
+          },
+        });
+        var ctx2 = document.getElementById("smoolchart").getContext("2d");
+        var chart2 = new Chart(ctx2, {
+          type: "line",
+          data: {
+            labels: ["12pm", "1pm", "2pm", "3pm", "4pm", "5pm"],
+            datasets: [
+              {
+                fill: "origin",
+                lineTension: 0.5,
+                label: "Average Blink Frequency",
+                backgroundColor: "#46347fcc",
+                borderWidth: 0,
+                data: [3, 4, 5, 4, 5, 4, 4, 5, 4, 5, 4, 5, 6, 5, 6, 5, 6, 5, 6],
+                elements: {
+                  point: {
+                    radius: 0,
+                  },
+                },
+              },
+            ],
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            tooltips: {
+              enabled: false,
+            },
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: false,
+                grid: {
+                  display: false,
+                  drawBorder: false,
+                },
+                // hide labels and border
+                ticks: {
+                  display: false,
+                },
+              },
+              x: {
+                grid: {
+                  display: false,
+                  drawBorder: false,
+                },
+                // hide labels and border
+                ticks: {
+                  display: false,
+                },
+              },
+            },
+          },
+        });
 
-				// ... any other code you might add ...
-				var ctx3 = document.getElementById("piChart").getContext("2d");
-				var pieData = {
-					labels: [
-						"Elapsed screen time",
-						"Remaining reccomended screen time",
-					],
-					datasets: [
-						{
-							data: [30, 70], // Adjust these values as needed
-							backgroundColor: ["#46347fcc", "#545988aa"],
-							borderColor: "#545988aa",
-							borderWidth: 1,
-						},
-					],
-				};
+        // ... any other code you might add ...
+        var ctx3 = document.getElementById("piChart").getContext("2d");
+        var pieData = {
+          labels: ["Elapsed screen time", "Remaining reccomended screen time"],
+          datasets: [
+            {
+              data: [30, 70], // Adjust these values as needed
+              backgroundColor: ["#46347fcc", "#545988aa"],
+              borderColor: "#545988aa",
+              borderWidth: 1,
+            },
+          ],
+        };
 
-				var pieChart = new Chart(ctx3, {
-					type: "doughnut",
-					data: pieData,
-					options: {
-						plugins: {
-							legend: {
-								display: false,
-							},
-						},
-						tooltips: {
-							enabled: false,
-						},
-						cutoutPercentage: 70,
-						responsive: true,
-					},
-				});
+        var pieChart = new Chart(ctx3, {
+          type: "doughnut",
+          data: pieData,
+          options: {
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            tooltips: {
+              enabled: false,
+            },
+            cutoutPercentage: 70,
+            responsive: true,
+          },
+        });
 
-				// Add new data point to the line chart
-				chart.data.datasets[0].data.push(7); // Add the new data point
-				chart.data.labels.push("6pm"); // Add the corresponding label
-				chart.update(); // Update the chart
+        // Add new data point to the line chart
+        chart.data.datasets[0].data.push(7); // Add the new data point
+        chart.data.labels.push("6pm"); // Add the corresponding label
+        chart.update(); // Update the chart
 
-				chart2.data.datasets[0].data.push(7); // Add the new data point
-				chart2.data.labels.push("6pm"); // Add the corresponding label
-				chart2.update();
+        chart2.data.datasets[0].data.push(7); // Add the new data point
+        chart2.data.labels.push("6pm"); // Add the corresponding label
+        chart2.update();
 
-				pieData[0] = 40; // Adjust the data value as needed
-				pieData[1] = 60; // Adjust the data value as needed
-				pieChart.update();
+        pieData[0] = 40; // Adjust the data value as needed
+        pieData[1] = 60; // Adjust the data value as needed
+        pieChart.update();
 
-				var ctx2 = document
-					.getElementById("smoolchart")
-					.getContext("2d");
-				var chart2 = new Chart(ctx2, {
-					// Second line chart code...
-				});
+        var ctx2 = document.getElementById("smoolchart").getContext("2d");
+        var chart2 = new Chart(ctx2, {
+          // Second line chart code...
+        });
 
-				var ctx3 = document
-					.getElementById("myPieChart")
-					.getContext("2d");
-				var pieData = [30, 70]; // adjust these values as needed
-				var pieChart = new Chart(ctx3, {
-					// Pie chart code...
-				});
+        var ctx3 = document.getElementById("myPieChart").getContext("2d");
+        var pieData = [30, 70]; // adjust these values as needed
+        var pieChart = new Chart(ctx3, {
+          // Pie chart code...
+        });
 
-				document.getElementById("piePercentage").textContent =
-					Math.round((pieData[0] / (pieData[0] + pieData[1])) * 100) +
-					"%";
-			};
-		</script>
-		<script src="app.js"></script>
-	</body>
+        document.getElementById("piePercentage").textContent =
+          Math.round((pieData[0] / (pieData[0] + pieData[1])) * 100) + "%";
+      };
+    </script>
+    <script type="module" src="js/app.js"></script>
+  </body>
 </html>

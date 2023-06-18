@@ -337,32 +337,13 @@ main {
   width: 100%;
   top: 100%;
   left: 0;
-  animation: rise-up 1.25s 0.5s forwards;
+  transition: top 0.5s ease;
   transform-origin: center -20px;
-  opacity: 0.7;
+  opacity: 0.9;
 }
 #suggestions_blank {
   padding: 10px;
   margin-top: 50px;
   border-radius: 7px;
   font-size: 0.85em;
-}
-/* raise from top: 100% to top: 60%, while pulsing the scale unpredictably like a liquid */
-@keyframes rise-up {
-  0% {
-    top: 100%;
-    transform: scale(1);
-  }
-  /* 50% {
-    top: 70%;
-    transform: scale(1);
-  }
-  80% {
-    top: 65%;
-    transform: scaleY(1.2);
-  } */
-  100% {
-    top: 60%;
-    transform: scale(1);
-  }
 }
