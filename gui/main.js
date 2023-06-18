@@ -1,8 +1,6 @@
-const { app, BrowserWindow, Menu, Notification } = require("electron");
+const { app, BrowserWindow, Menu} = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
-// const notifier = require('node-notifier')
-
 
 app.setName("AEye Health");
 
@@ -64,10 +62,7 @@ function createWindow() {
 	pythonProcess.on("close", (code) => {
 		console.log("Python script process exited with code", code);
 	});
-
 }
-
-
 
 app.whenReady().then(() => {
 	createWindow();
@@ -85,25 +80,3 @@ app.on("window-all-closed", () => {
 		app.quit();
 	}
 });
-
-
-         
-// document.getElementById('notify').onclick = (event) => {
-//     notifier.notify ({
-//     title: 'My awesome title',
-//     message: 'Hello from electron, Mr. User!',         
-//     sound: true,
-//     wait: true
-            
-//     }, function (err, response) {
-//                // Response is response from notification
-//     });
-
-//         notifier.on('click', function (notifierObject, options) {
-//         console.log("You clicked on the notification")
-//     });
-
-//         notifier.on('timeout', function (notifierObject, options) {
-//         console.log("Notification timed out!")
-//     });
-// }

@@ -15,21 +15,20 @@ blink_thresh = 0.2
 frame_counter = 0
 frame_limit = 3
 blink_counter = 0
-previous_blink_counter = 0
 max_blinks = 250
+previous_blink_counter = 0
 
 with open("gui/storage.json", "r") as read_file:
     data = json.load(read_file)
 
 blink_counter = data["blinkcounter"] if data["blinkcounter"] != None else 0
+previous_blink_counter = blink_counter
 
+data["maxblinks"] = max_blinks
+
+json_data = json.dumps(data)
 with open("gui/storage.json", "w") as file:
-    data = json.load(read_file)
-    data["maxblinks"] = max_blinks
-
-    json_data = json.dumps(data)
-    with open("gui/storage.json", "w") as file:
-        file.write(json_data)
+    file.write(json_data)
 
 def calculate_ear(eye):
 
