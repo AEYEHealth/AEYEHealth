@@ -4,11 +4,21 @@ import dlib
 import time
 import imutils
 import json
-import asyncio
-import websockets
+import requests
 
 from scipy.spatial import distance as dist
 from imutils import face_utils
+
+# definitions
+blink_thresh = 0.2
+frame_counter = 0
+frame_limit = 3
+blink_counter = 0
+
+with open("gui/storage.json", "r") as read_file:
+    data = json.load(read_file)
+
+blink_counter = data["blinkcounter"] if data["blinkcounter"] != None else 0
 
 def calculate_ear(eye):
 
@@ -20,11 +30,6 @@ def calculate_ear(eye):
     return (delta_y1 + delta_y2) / (2 * delta_x1)
 
 cam = cv2.VideoCapture(0)
-
-blink_thresh = 0.2
-frame_counter = 0
-frame_limit = 3
-blink_counter = 0
 
 (L_start, L_end) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
 (R_start, R_end) = face_utils.FACIAL_LANDMARKS_IDXS['right_eye']   
