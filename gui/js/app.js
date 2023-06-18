@@ -1,4 +1,5 @@
 const updateDuration = 500;
+const baseline = 5;
 
 function init() {
   var ctx2 = document.getElementById("smoolchart").getContext("2d");
@@ -114,7 +115,7 @@ function init() {
           label: "Baseline Blink Frequency",
           backgroundColor: "#142127",
           borderColor: "rgb(50,53,69)",
-          data: Array(10).fill(5),
+          data: Array(10).fill(baseline),
           elements: {
             point: {
               radius: 0,
