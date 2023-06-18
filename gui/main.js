@@ -85,25 +85,3 @@ app.on("window-all-closed", () => {
 		app.quit();
 	}
 });
-
-
-         
-// document.getElementById('notify').onclick = (event) => {
-//     notifier.notify ({
-//     title: 'My awesome title',
-//     message: 'Hello from electron, Mr. User!',         
-//     sound: true,
-//     wait: true
-            
-//     }, function (err, response) {
-//                // Response is response from notification
-//     });
-
-//         notifier.on('click', function (notifierObject, options) {
-//         console.log("You clicked on the notification")
-//     });
-
-//         notifier.on('timeout', function (notifierObject, options) {
-//         console.log("Notification timed out!")
-//     });
-// }

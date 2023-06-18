@@ -23,13 +23,11 @@ with open("gui/storage.json", "r") as read_file:
 
 blink_counter = data["blinkcounter"] if data["blinkcounter"] != None else 0
 
-with open("gui/storage.json", "w") as file:
-    data = json.load(read_file)
-    data["maxblinks"] = max_blinks
+data["maxblinks"] = max_blinks
 
-    json_data = json.dumps(data)
-    with open("gui/storage.json", "w") as file:
-        file.write(json_data)
+json_data = json.dumps(data)
+with open("gui/storage.json", "w") as file:
+    file.write(json_data)
 
 def calculate_ear(eye):
 
