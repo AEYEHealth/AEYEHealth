@@ -10,9 +10,13 @@ function updateCount() {
     request.send(null);
     // get request data
     let data = JSON.parse(request.responseText);
-    console.log(data.blinkcounter);
-    $("#progress-label").text(data.blinkcounter);
-    $("#progress-fill").css("top", `${(1 - Math.min(data.blinkcounter / maxBlinks, 1.1)) * 100}%`);
+    console.log(data);
+    let blinks = data?.blinkcounter || 0;
+    if (!data?.blinkcounter && data?.blinkcounter !== 0) {
+      console.warn("Blinks are undefined");
+    }
+    $("#progress-label").text(blinks);
+    $("#progress-fill").css("top", `${(1 - Math.min(blinks / maxBlinks, 1.1)) * 100}%`);
   } catch (err) {
     new ErrorToast("Failed to load data from storage.json", err?.code || err || "Unknown error");
     return;
