@@ -7,3 +7,6 @@
 - numpy
 - dlib
 - mutils
+
+Next Steps:
+- add neck health analysis (posture)
