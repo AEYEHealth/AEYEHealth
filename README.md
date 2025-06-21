@@ -1,12 +1,167 @@
-# AEYE Health - Blink your way to a better future
-![Frame 2](https://github.com/AEYEHealth/AEYEHealth/assets/10799950/2fb00595-f08c-4d18-8665-26d4cf3db8eb)
+# AEYE Health - Smart Eye Care
 
-## Installation Requirements
-- darwin architecture
-- opencv-python
-- numpy
-- dlib
-- mutils
+A modern, intelligent eye health monitoring application that helps you maintain healthy blinking habits and reduce digital eye strain.
 
-Next Steps:
-- add neck health analysis (posture)
+## 🌟 Features
+
+- **Real-time Blink Tracking**: Advanced computer vision technology monitors your blinking patterns
+- **Smart Analytics**: Detailed insights into your eye health with beautiful visualizations
+- **Intelligent Alerts**: Timely reminders to maintain healthy eye habits
+- **Modern UI**: Professional, responsive design with smooth animations
+- **Health Suggestions**: Personalized recommendations based on your usage patterns
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.7+
+- Webcam access
+- Modern web browser
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd AEYEHealth
+   ```
+
+2. **Set up the Python environment**
+   ```bash
+   conda create -n aeyehealth python=3.11
+   conda activate aeyehealth
+   pip install opencv-python dlib imutils scipy requests
+   ```
+
+3. **Download the face landmark model**
+   ```bash
+   # You'll need to download the shape_predictor_68_face_landmarks.dat file
+   # and place it in the engine/ directory
+   ```
+
+### Running the Application
+
+1. **Start the eye tracking engine**
+   ```bash
+   conda activate aeyehealth
+   python3 engine/faces.py
+   ```
+
+2. **Open the web interface**
+   ```bash
+   cd gui
+   python3 -m http.server 8000
+   ```
+
+3. **Access the dashboard**
+   Open your browser and navigate to `http://localhost:8000`
+
+## 🎨 Modernized GUI Features
+
+### Design System
+- **Modern Color Palette**: Professional indigo and emerald color scheme
+- **Glass Morphism**: Beautiful backdrop blur effects
+- **Smooth Animations**: Elegant transitions and micro-interactions
+- **Responsive Design**: Works perfectly on all screen sizes
+
+### Enhanced Components
+- **Interactive Charts**: Real-time data visualization with Chart.js
+- **Smart Progress Indicators**: Animated progress bars and counters
+- **Feature Cards**: Highlighting key application capabilities
+- **Team Showcase**: Professional team member profiles
+- **Loading States**: Smooth loading animations and feedback
+
+### User Experience
+- **Smooth Navigation**: One-page scrolling with active state indicators
+- **Accessibility**: ARIA labels and semantic HTML
+- **Error Handling**: Graceful error states and user feedback
+- **Performance**: Optimized animations and efficient data updates
+
+## 📊 Dashboard Sections
+
+### Main Dashboard
+- **Daily Summary**: Overview of your eye health metrics
+- **Screen Time Progress**: Visual representation of daily screen time
+- **Recent Health Trends**: Line chart showing blink frequency over time
+- **Smart Suggestions**: Personalized recommendations based on your data
+
+### Analytics
+- **Health History**: Comprehensive chart showing long-term trends
+- **Baseline Comparison**: Compare your patterns against healthy benchmarks
+
+### About & Contact
+- **Feature Overview**: Detailed explanation of app capabilities
+- **Team Information**: Meet the developers behind AEYE Health
+- **Contact Links**: Connect with the team via GitHub
+
+## 🔧 Technical Stack
+
+### Frontend
+- **HTML5**: Semantic markup with accessibility features
+- **CSS3**: Modern design system with CSS custom properties
+- **JavaScript (ES6+)**: Modular code with async/await patterns
+- **Chart.js**: Beautiful, responsive data visualizations
+
+### Backend
+- **Python**: Core eye tracking engine
+- **OpenCV**: Computer vision for blink detection
+- **dlib**: Facial landmark detection
+- **JSON**: Data storage and communication
+
+## 🎯 Key Improvements
+
+### Visual Design
+- ✅ Modern color scheme with better contrast
+- ✅ Professional typography using Inter font
+- ✅ Consistent spacing and layout system
+- ✅ Smooth animations and transitions
+- ✅ Glass morphism effects
+
+### User Experience
+- ✅ Responsive design for all devices
+- ✅ Improved navigation with smooth scrolling
+- ✅ Better error handling and loading states
+- ✅ Enhanced accessibility features
+- ✅ Interactive charts with tooltips
+
+### Code Quality
+- ✅ Modular JavaScript architecture
+- ✅ Modern CSS with custom properties
+- ✅ Semantic HTML structure
+- ✅ Better error handling and logging
+- ✅ Performance optimizations
+
+## 🐛 Troubleshooting
+
+### Camera Issues
+If you encounter camera permission errors:
+1. Grant camera access in your system preferences
+2. On macOS: System Preferences > Security & Privacy > Camera
+3. Restart the application after granting permissions
+
+### Environment Issues
+If you have dependency problems:
+```bash
+conda activate aeyehealth
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to submit issues and pull requests.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👥 Team
+
+- **Nick** - [GitHub](https://github.com/AgarwalAarush)
+- **Sander** - [GitHub](https://github.com/akshayshivkumar)
+- **Aarush** - [GitHub](https://github.com/nickflix3003)
+- **Akshay** - [GitHub](https://github.com/sandervonk)
+
+---
+
+**AEYE Health** - Making eye care smarter, one blink at a time. 👁️✨

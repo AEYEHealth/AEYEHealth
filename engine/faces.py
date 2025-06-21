@@ -30,6 +30,7 @@ json_data = json.dumps(data)
 with open("gui/storage.json", "w") as file:
     file.write(json_data)
 
+
 def calculate_ear(eye):
 
     delta_y1 = dist.euclidean(eye[1], eye[5])
@@ -39,13 +40,21 @@ def calculate_ear(eye):
 
     return (delta_y1 + delta_y2) / (2 * delta_x1)
 
+
 cam = cv2.VideoCapture(0)
 
+# Check if camera opened successfully
+if not cam.isOpened():
+    print("Error: Could not open camera. Please check camera permissions and try again.")
+    print("On macOS, you may need to grant camera access in System Preferences > Security & Privacy > Camera")
+    sys.exit(1)
+
 (L_start, L_end) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
-(R_start, R_end) = face_utils.FACIAL_LANDMARKS_IDXS['right_eye']   
+(R_start, R_end) = face_utils.FACIAL_LANDMARKS_IDXS['right_eye']
 
 detector = dlib.get_frontal_face_detector()
-landmark_predict = dlib.shape_predictor('engine/shape_predictor_68_face_landmarks.dat')
+landmark_predict = dlib.shape_predictor(
+    'engine/shape_predictor_68_face_landmarks.dat')
 
 time_limit = 10
 time_counter = 0
@@ -58,7 +67,13 @@ start_update = time.perf_counter()
 
 while True:
 
-    _, frame = cam.read()
+    ret, frame = cam.read()
+
+    # Check if frame was successfully captured
+    if not ret or frame is None:
+        print("Error: Could not read frame from camera. Please check camera connection.")
+        break
+
     frame = imutils.resize(frame, width=640)
 
     img_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -88,12 +103,12 @@ while True:
                             cv2.FONT_HERSHEY_DUPLEX, 1, (0, 200, 0), 1)
             else:
                 frame_counter = 0
-                
-    cv2.putText(frame, f'Blinks: {blink_counter}', (30, 100), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 200, 0), 1)
 
+    cv2.putText(frame, f'Blinks: {blink_counter}', (30, 100),
+                cv2.FONT_HERSHEY_DUPLEX, 1, (0, 200, 0), 1)
 
-        # sys.stdout.flush
-        # print
+    # sys.stdout.flush
+    # print
 
     cv2.imshow("Video", frame)
     if cv2.waitKey(5) & 0xFF == ord('q'):
@@ -101,20 +116,20 @@ while True:
 
     # change: 600000 -> 10000
     if time.perf_counter() - start >= 0.5:
-        start = time.perf_counter();
+        start = time.perf_counter()
         data["blinkcounter"] = blink_counter
         json_data = json.dumps(data)
         with open("gui/storage.json", "w") as file:
             file.write(json_data)
-        
+
     if time.perf_counter() - start_update >= history_interval:
 
-        start_update = time.perf_counter();
+        start_update = time.perf_counter()
 
         with open("gui/storage.json", "r") as read_file:
             data = json.load(read_file)
 
-        blink_data = []    
+        blink_data = []
         if "blinkhistory" in data:
             blink_data = data["blinkhistory"]
 
@@ -131,4 +146,3 @@ while True:
 
 cam.release()
 cv2.destroyAllWindows()
-
