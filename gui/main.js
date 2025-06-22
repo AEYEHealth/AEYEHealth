@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu} = require("electron");
+const { app, BrowserWindow, Menu, shell } = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
 
@@ -34,6 +34,20 @@ const menuItems = [
 			},
 		],
 	},
+	{
+		label: "Developer",
+		submenu: [
+			{
+				label: "Toggle Developer Tools",
+				click: (menuItem, browserWindow) => {
+					if (browserWindow) {
+						browserWindow.webContents.toggleDevTools();
+					}
+				},
+				accelerator: process.platform !== "darwin" ? "F12" : "Cmd+Option+I",
+			},
+		],
+	},
 ];
 
 function createWindow() {
@@ -49,6 +63,18 @@ function createWindow() {
 
 	win.loadFile(path.join(__dirname, "index.html"));
 
+	// Handle external links - open in default browser
+	win.webContents.setWindowOpenHandler(({ url }) => {
+		shell.openExternal(url);
+		return { action: 'deny' };
+	});
+
+	// Handle new window requests (for target="_blank" links)
+	win.webContents.on('new-window', (event, navigationUrl) => {
+		event.preventDefault();
+		shell.openExternal(navigationUrl);
+	});
+
 	const pythonProcess = spawn("python", ["engine/faces.py"]);
 
 	pythonProcess.stdout.on("data", (data) => {
@@ -63,7 +89,9 @@ function createWindow() {
 		console.log("Python script process exited with code", code);
 	});
 
-	win.webContents.openDevTools();
+	// Developer tools are now disabled by default
+	// To enable them for debugging, uncomment the line below:
+	// win.webContents.openDevTools();
 
 }
 

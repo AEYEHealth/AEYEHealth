@@ -16,6 +16,46 @@ const CONFIG = {
 let charts = [];
 let maxBlinks = CONFIG.maxBlinks;
 let isLoading = false;
+let currentView = 'today'; // 'today' or 'week'
+
+// Data processing functions
+function getTodayIntervals(data) {
+  if (!data?.current_day_intervals) return [];
+  return data.current_day_intervals;
+}
+
+function getWeekData(data) {
+  if (!data?.daily_data) return [];
+  
+  const today = new Date();
+  const weekData = [];
+  
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    const dailyTotal = data.daily_data[dateStr] || 0;
+    weekData.push({
+      date: dateStr,
+      blinks: dailyTotal,
+      label: date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+    });
+  }
+  
+  return weekData;
+}
+
+function getTodayLabels(intervals) {
+  const labels = [];
+  const now = new Date();
+  
+  for (let i = intervals.length - 1; i >= 0; i--) {
+    const time = new Date(now.getTime() - (intervals.length - 1 - i) * 5 * 60 * 1000);
+    labels.unshift(time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }));
+  }
+  
+  return labels;
+}
 
 // Initialize the application
 function init() {
@@ -47,6 +87,15 @@ function init() {
     // Initialize intersection observer for animations
     initIntersectionObserver();
     
+    // Initialize view selector
+    initViewSelector();
+    
+    // Initialize external link handling
+    initExternalLinks();
+    
+    // Initialize card click handlers for testing
+    initCardClickHandlers();
+    
     console.log('Dashboard initialized successfully');
   } catch (error) {
     console.error('Failed to initialize dashboard:', error);
@@ -56,6 +105,41 @@ function init() {
   }
 }
 
+// Initialize view selector for recent health threads
+function initViewSelector() {
+  const viewContainer = document.getElementById('view-selector');
+  if (!viewContainer) return;
+  
+  viewContainer.innerHTML = `
+    <div class="view-selector">
+      <button class="view-btn active" data-view="today">Today</button>
+      <button class="view-btn" data-view="week">This Week</button>
+    </div>
+  `;
+  
+  const viewButtons = viewContainer.querySelectorAll('.view-btn');
+  
+  viewButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      viewButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentView = btn.dataset.view;
+      updateHealthTrendsView();
+    });
+  });
+}
+
+// Update health trends view based on selected view
+function updateHealthTrendsView() {
+  if (charts.length === 0) return;
+  
+  const healthChart = charts[0];
+  if (!healthChart) return;
+  
+  // Trigger a data update to refresh the chart with new view
+  updateCount();
+}
+
 // Initialize Health Trends Chart
 function initHealthTrendsChart() {
   const ctx = document.getElementById("smoolchart").getContext("2d");
@@ -63,15 +147,15 @@ function initHealthTrendsChart() {
   return new Chart(ctx, {
     type: "line",
     data: {
-      labels: ["7am", "8am", "9am", "10am", "11am", "12pm"],
+      labels: [],
       datasets: [{
         fill: "origin",
         lineTension: 0.4,
-        label: "Average Blink Frequency",
+        label: "Blink Frequency",
         backgroundColor: `${CONFIG.chartColors.primary}20`,
         borderColor: CONFIG.chartColors.primary,
         borderWidth: 2,
-        data: [38, 20, 42, 35, 46, 29],
+        data: [],
         elements: {
           point: {
             radius: 0,
@@ -102,13 +186,15 @@ function initHealthTrendsChart() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 60,
           grid: {
             display: false,
             drawBorder: false,
           },
           ticks: {
-            display: false,
+            color: '#64748b',
+            font: {
+              size: 12
+            }
           },
         },
         x: {
@@ -357,10 +443,40 @@ function animateNumber(element, targetValue) {
 // Update charts with new data
 function updateCharts(data) {
   if (charts.length >= 2) {
-    // Update health trends chart
+    // Update health trends chart based on current view
     const healthChart = charts[0];
-    if (healthChart && data?.blinkhistory) {
-      healthChart.data.datasets[0].data = data.blinkhistory;
+    if (healthChart) {
+      if (currentView === 'today') {
+        // Show 5-minute intervals for today
+        const intervals = getTodayIntervals(data);
+        const labels = getTodayLabels(intervals);
+        
+        // Fallback if no data
+        if (intervals.length === 0) {
+          healthChart.data.labels = ['No data yet'];
+          healthChart.data.datasets[0].data = [0];
+        } else {
+          healthChart.data.labels = labels;
+          healthChart.data.datasets[0].data = intervals;
+        }
+        healthChart.data.datasets[0].label = "Blinks per 5-min interval";
+      } else {
+        // Show daily averages for the week
+        const weekData = getWeekData(data);
+        const labels = weekData.map(d => d.label);
+        const values = weekData.map(d => d.blinks);
+        
+        // Fallback if no data
+        if (weekData.length === 0) {
+          healthChart.data.labels = ['No data yet'];
+          healthChart.data.datasets[0].data = [0];
+        } else {
+          healthChart.data.labels = labels;
+          healthChart.data.datasets[0].data = values;
+        }
+        healthChart.data.datasets[0].label = "Daily blink total";
+      }
+      
       healthChart.update('none');
     }
     
@@ -444,18 +560,24 @@ async function updateHistory() {
 
 // Initialize smooth scrolling for navigation
 function initSmoothScrolling() {
+  console.log('Initializing smooth scrolling...');
   const navLinks = document.querySelectorAll('.header_nav_link');
+  console.log('Found nav links:', navLinks.length);
   
-  navLinks.forEach(link => {
+  navLinks.forEach((link, index) => {
+    console.log(`Setting up link ${index + 1}:`, link.getAttribute('href'));
     link.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('Nav link clicked:', link.getAttribute('href'));
       
       const targetId = link.getAttribute('href').substring(1);
       const targetElement = document.getElementById(targetId);
+      console.log('Target element:', targetElement);
       
       if (targetElement) {
         const headerHeight = 80; // Fixed header height
         const targetPosition = targetElement.offsetTop - headerHeight - 20;
+        console.log('Scrolling to position:', targetPosition);
         
         window.scrollTo({
           top: targetPosition,
@@ -465,9 +587,13 @@ function initSmoothScrolling() {
         // Update active navigation
         navLinks.forEach(l => l.removeAttribute('aria-current'));
         link.setAttribute('aria-current', 'page');
+      } else {
+        console.error('Target element not found:', targetId);
       }
     });
   });
+  
+  console.log('Smooth scrolling initialized');
 }
 
 // Initialize scroll effects
@@ -548,17 +674,8 @@ function initIntersectionObserver() {
 
 // Initialize loading states
 function initLoadingStates() {
-  // Add loading class to elements that might need it
-  const boxes = document.querySelectorAll('.box');
-  boxes.forEach(box => {
-    box.addEventListener('mouseenter', () => {
-      box.classList.add('loading');
-    });
-    
-    box.addEventListener('mouseleave', () => {
-      box.classList.remove('loading');
-    });
-  });
+  // Removed loading class functionality since we removed the animation
+  console.log('Loading states disabled - animation removed');
 }
 
 // Show loading overlay
@@ -645,6 +762,45 @@ document.addEventListener('DOMContentLoaded', () => {
   init();
   initKeyboardNavigation();
 });
+
+// Initialize card click handlers for testing
+function initCardClickHandlers() {
+  const boxes = document.querySelectorAll('.box');
+  boxes.forEach((box, index) => {
+    box.addEventListener('click', () => {
+      console.log(`Card ${index + 1} clicked!`);
+      // Add a visual feedback
+      box.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        box.style.transform = '';
+      }, 150);
+    });
+  });
+}
+
+// Initialize external link handling
+function initExternalLinks() {
+  // Handle all external links (GitHub profiles, etc.)
+  const externalLinks = document.querySelectorAll('a[href^="http"]');
+  
+  externalLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Check if we're in an Electron environment
+      if (typeof require !== 'undefined' && require('electron')) {
+        // In Electron, use shell.openExternal
+        const { shell } = require('electron');
+        shell.openExternal(link.href);
+      } else {
+        // In regular browser, open in new tab
+        window.open(link.href, '_blank', 'noopener,noreferrer');
+      }
+    });
+  });
+  
+  console.log(`Initialized external link handling for ${externalLinks.length} links`);
+}
 
 // Export functions for potential use in other modules
 export {

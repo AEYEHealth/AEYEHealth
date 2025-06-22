@@ -56,6 +56,37 @@ A modern, intelligent eye health monitoring application that helps you maintain 
 3. **Access the dashboard**
    Open your browser and navigate to `http://localhost:8000`
 
+### Running Camera in Background Mode
+
+If you want to run the camera without showing any GUI (useful for background monitoring):
+
+**Option 1: Using the shell script (Recommended)**
+```bash
+./start_camera.sh
+```
+
+**Option 2: Using the Python runner**
+```bash
+python3 run_camera_background.py
+```
+
+**Option 3: Direct execution**
+```bash
+conda activate aeyehealth
+python3 engine/faces.py
+```
+
+The background mode will:
+- Run the camera without displaying any GUI windows
+- Print blink detection messages to the console
+- Save data to `gui/storage.json` as usual
+- Allow you to stop with Ctrl+C
+
+This is perfect for:
+- Running the camera while working on other tasks
+- Server environments without display
+- Automated monitoring setups
+
 ## 🎨 Modernized GUI Features
 
 ### Design System
@@ -76,6 +107,7 @@ A modern, intelligent eye health monitoring application that helps you maintain 
 - **Accessibility**: ARIA labels and semantic HTML
 - **Error Handling**: Graceful error states and user feedback
 - **Performance**: Optimized animations and efficient data updates
+- **External Links**: GitHub profile links and external URLs open in the default browser
 
 ## 📊 Dashboard Sections
 
@@ -146,6 +178,12 @@ conda activate aeyehealth
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+### Developer Tools
+If you need to access developer tools for debugging:
+- **Keyboard Shortcut**: Press `F12` (Windows/Linux) or `Cmd+Option+I` (macOS)
+- **Menu Option**: Go to Developer > Toggle Developer Tools
+- **Note**: Developer tools are disabled by default for a cleaner user experience
 
 ## 🤝 Contributing
 

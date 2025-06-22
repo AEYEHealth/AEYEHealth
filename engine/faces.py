@@ -5,9 +5,28 @@ import time
 import imutils
 import json
 import requests
+import signal
+import os
+from datetime import datetime, timedelta
+from collections import defaultdict
 
 from scipy.spatial import distance as dist
 from imutils import face_utils
+
+# Global flag for clean shutdown
+running = True
+
+
+def signal_handler(signum, frame):
+    """Handle shutdown signals gracefully"""
+    global running
+    print("\nShutting down camera gracefully...")
+    running = False
+
+
+# Register signal handlers for clean shutdown
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 # definitions
 history_interval = 10
@@ -18,6 +37,7 @@ blink_counter = 0
 max_blinks = 250
 previous_blink_counter = 0
 
+# Load existing data
 with open("gui/storage.json", "r") as read_file:
     data = json.load(read_file)
 
@@ -26,9 +46,71 @@ previous_blink_counter = blink_counter
 
 data["maxblinks"] = max_blinks
 
+# Initialize new data structure if not exists
+if "daily_data" not in data:
+    data["daily_data"] = {}
+if "current_day_intervals" not in data:
+    data["current_day_intervals"] = []
+if "last_interval_update" not in data:
+    data["last_interval_update"] = datetime.now().isoformat()
+
 json_data = json.dumps(data)
 with open("gui/storage.json", "w") as file:
     file.write(json_data)
+
+print("AEYE Health - Camera started in background mode")
+print("Press Ctrl+C to stop the camera")
+
+
+def get_current_date():
+    """Get current date in YYYY-MM-DD format"""
+    return datetime.now().strftime("%Y-%m-%d")
+
+
+def get_current_time():
+    """Get current time in HH:MM format"""
+    return datetime.now().strftime("%H:%M")
+
+
+def aggregate_daily_data():
+    """Aggregate current day intervals into daily total"""
+    current_date = get_current_date()
+    if current_date not in data["daily_data"]:
+        data["daily_data"][current_date] = 0
+
+    # Sum all intervals for current day
+    daily_total = sum(data["current_day_intervals"])
+    data["daily_data"][current_date] = daily_total
+
+
+def update_interval_data():
+    """Update 5-minute interval data for current day"""
+    global data, previous_blink_counter
+
+    current_time = datetime.now()
+    last_update = datetime.fromisoformat(data["last_interval_update"])
+
+    # Check if 5 minutes have passed
+    if (current_time - last_update).total_seconds() >= 300:  # 5 minutes = 300 seconds
+        # Add current interval blinks to intervals
+        interval_blinks = blink_counter - previous_blink_counter
+        if interval_blinks > 0:
+            data["current_day_intervals"].append(interval_blinks)
+
+        # Keep only last 288 intervals (24 hours worth of 5-minute intervals)
+        if len(data["current_day_intervals"]) > 288:
+            data["current_day_intervals"] = data["current_day_intervals"][-288:]
+
+        data["last_interval_update"] = current_time.isoformat()
+        previous_blink_counter = blink_counter
+
+        # Aggregate daily data
+        aggregate_daily_data()
+
+        # Save updated data
+        json_data = json.dumps(data)
+        with open("gui/storage.json", "w") as file:
+            file.write(json_data)
 
 
 def calculate_ear(eye):
@@ -49,6 +131,8 @@ if not cam.isOpened():
     print("On macOS, you may need to grant camera access in System Preferences > Security & Privacy > Camera")
     sys.exit(1)
 
+print("Camera initialized successfully - running in background")
+
 (L_start, L_end) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
 (R_start, R_end) = face_utils.FACIAL_LANDMARKS_IDXS['right_eye']
 
@@ -65,7 +149,7 @@ start_update = time.perf_counter()
 #     async with websockets.connect('ws://localhost:8080') as websocket:
 #         await websocket.send(blink_counter)
 
-while True:
+while running:
 
     ret, frame = cam.read()
 
@@ -99,20 +183,9 @@ while True:
             if frame_counter >= frame_limit:
                 blink_counter += 1
                 frame_counter = 0
-                cv2.putText(frame, 'Blink Detected', (30, 30),
-                            cv2.FONT_HERSHEY_DUPLEX, 1, (0, 200, 0), 1)
+                print(f"Blink detected! Total blinks: {blink_counter}")
             else:
                 frame_counter = 0
-
-    cv2.putText(frame, f'Blinks: {blink_counter}', (30, 100),
-                cv2.FONT_HERSHEY_DUPLEX, 1, (0, 200, 0), 1)
-
-    # sys.stdout.flush
-    # print
-
-    cv2.imshow("Video", frame)
-    if cv2.waitKey(5) & 0xFF == ord('q'):
-        break
 
     # change: 600000 -> 10000
     if time.perf_counter() - start >= 0.5:
@@ -121,6 +194,9 @@ while True:
         json_data = json.dumps(data)
         with open("gui/storage.json", "w") as file:
             file.write(json_data)
+
+        # Update interval data
+        update_interval_data()
 
     if time.perf_counter() - start_update >= history_interval:
 
@@ -144,5 +220,6 @@ while True:
 
         previous_blink_counter = blink_counter
 
+print("Releasing camera...")
 cam.release()
-cv2.destroyAllWindows()
+print("Camera stopped successfully")
